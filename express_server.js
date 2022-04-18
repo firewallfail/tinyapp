@@ -39,10 +39,10 @@ app.get("/urls", (req, res) => {
 
 app.post("/urls", (req, res) => {
   console.log(req.body);
-  shortURL = generateRandomString();
+  let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect(`/urls/${shortURL}`);
-})
+});
 
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
@@ -60,6 +60,6 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 //convert a random number to hex and then take a 6 digit slice of it
-function generateRandomString() {
-  return Math.random().toString(16).slice(2, 8);
+const generateRandomString = () => {
+  return Math.random().toString(36).slice(2, 8);
 };
