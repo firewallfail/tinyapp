@@ -57,4 +57,4 @@ app.get("/u/:shortURL", (req, res) => {
 //convert a random number to hex and then take a 6 digit slice of it
 function generateRandomString() {
   return Math.random().toString(16).slice(2, 8);
-}
+};
