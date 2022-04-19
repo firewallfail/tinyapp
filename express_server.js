@@ -19,6 +19,10 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+
+};
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -87,4 +91,8 @@ app.get("/register", (req, res) => {
   const templateVars = { username: req.cookies.username };
   res.render("user_registration", templateVars);
 });
+
+app.post("/register", (req, res) => {
+  res.redirect("/urls");
+})
 
