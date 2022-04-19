@@ -35,7 +35,8 @@ app.get("/urls.json", (req, res) => {
 
 //page to add new urls
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = { username: req.cookies.username };
+  res.render("urls_new", templateVars);
 });
 //response after adding a new page
 app.post("/urls", (req, res) => {
