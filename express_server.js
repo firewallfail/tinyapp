@@ -77,21 +77,23 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+//logs user in and stores a cookie
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.username);
   res.redirect("/urls");
 });
-
+//logs user out and removes the cookie
 app.post("/logout", (req, res) => {
   res.clearCookie('username');
   res.redirect("/urls");
 });
 
+//brings user to registration page
 app.get("/register", (req, res) => {
   const templateVars = { username: req.cookies.username };
   res.render("user_registration", templateVars);
 });
-
+//creates a new user when someone registers
 app.post("/register", (req, res) => {
   const newId = generateRandomString();
   users[newId] = {
