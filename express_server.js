@@ -39,7 +39,7 @@ app.get("/urls.json", (req, res) => {
 
 //page to add new urls
 app.get("/urls/new", (req, res) => {
-  const templateVars = { username: req.cookies.username };
+  const templateVars = { user: users[req.cookies.user_id] };
   res.render("urls_new", templateVars);
 });
 //response after adding a new page
@@ -51,7 +51,7 @@ app.post("/urls", (req, res) => {
 
 //page showing all current urls
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies.username };
+  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_id] };
   res.render("urls_index", templateVars);
 });
 //url deletion from /urls
@@ -62,7 +62,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 //edit page for a single url
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies.username };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies.user_id] };
   res.render("urls_show", templateVars);
 });
 //update link that the shortened url leads to
@@ -90,7 +90,7 @@ app.post("/logout", (req, res) => {
 
 //brings user to registration page
 app.get("/register", (req, res) => {
-  const templateVars = { username: req.cookies.username };
+  const templateVars = { user: users[req.cookies.user_id] };
   res.render("user_registration", templateVars);
 });
 //creates a new user when someone registers
