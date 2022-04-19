@@ -45,7 +45,7 @@ app.post("/urls", (req, res) => {
 
 //page showing all current urls
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
+  const templateVars = { urls: urlDatabase, username: req.cookies.username };
   res.render("urls_index", templateVars);
 });
 //url deletion from /urls
@@ -56,7 +56,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 //edit page for a single url
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies.username };
   res.render("urls_show", templateVars);
 });
 //update link that the shortened url leads to
@@ -70,4 +70,9 @@ app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
+
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username);
+  res.redirect("/urls");
+})
 
