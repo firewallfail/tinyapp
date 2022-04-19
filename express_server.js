@@ -5,13 +5,6 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
-
-
-//convert a random number to hex and then take a 6 digit slice of it
-const generateRandomString = () => {
-  return Math.random().toString(36).slice(2, 8);
-};
-
 app.set("view engine", "ejs");
 
 const urlDatabase = {
@@ -22,6 +15,22 @@ const urlDatabase = {
 const users = {
 
 };
+
+//convert a random number to hex and then take a 6 digit slice of it
+const generateRandomString = () => {
+  return Math.random().toString(36).slice(2, 8);
+};
+//check if an email is already in the users object
+const isEmailInUse = (email, users) => {
+  for (const user in users) {
+    if (email === users[user].email) {
+      return true;
+    }
+    return false;
+  }
+};
+
+
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -95,18 +104,20 @@ app.get("/register", (req, res) => {
 });
 //creates a new user when someone registers
 app.post("/register", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
   //error handling for empty registration field
-  if (!req.body.email || !req.body.password) {
+  if (!email || !password) {
     res.sendStatus(400);
     return;
   };
-  const newId = generateRandomString();
-  users[newId] = {
-    id: newId,
-    email: req.body.email,
-    password: req.body.password
-  };
-  res.cookie("user_id", newId);
+  if (isEmailInUse(email, users)) {
+    res.sendStatus(400);
+    return;
+  }
+  const id = generateRandomString();
+  users[id] = { id, email, password };
+  res.cookie("user_id", id);
   res.redirect("/urls");
 });
 
