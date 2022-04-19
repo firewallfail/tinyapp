@@ -4,6 +4,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 
 //convert a random number to hex and then take a 6 digit slice of it
