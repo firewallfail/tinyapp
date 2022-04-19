@@ -93,6 +93,13 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+  const newId = generateRandomString();
+  users[newId] = {
+    id: newId,
+    email: req.body.email,
+    password: req.body.password
+  };
+  res.cookie("user_id", newId);
   res.redirect("/urls");
-})
+});
 
