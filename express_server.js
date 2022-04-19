@@ -95,6 +95,11 @@ app.get("/register", (req, res) => {
 });
 //creates a new user when someone registers
 app.post("/register", (req, res) => {
+  //error handling for empty registration field
+  if (!req.body.email || !req.body.password) {
+    res.sendStatus(400);
+    return;
+  };
   const newId = generateRandomString();
   users[newId] = {
     id: newId,
