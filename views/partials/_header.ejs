@@ -17,11 +17,12 @@
         <button class="btn btn-primary" type="submit"><b>Logout</b></button>
         </h4>
         <% } else{ %>
-          <form class="form-inline" action="/login" method="POST">
-            <input class="form-control" type="text" name="user.email" placeholder="Username"
-              style="width: 300px; margin: 1em">
+          <form class="form-inline" action="/login" method="GET">
             <button class="btn btn-primary" type="submit"><b>Login</b></button>
-            <% } %>
           </form>
+          <form class="form-inline" action="/register" method="GET">
+            <button class="btn btn-primary" type="submit"><b>Register</b></button>
+          </form>
+          <% } %>
   </nav>
 </header>
