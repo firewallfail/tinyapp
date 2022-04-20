@@ -21,10 +21,10 @@ const generateRandomString = () => {
   return Math.random().toString(36).slice(2, 8);
 };
 //check if an email is already in the users object
-const isEmailValid = (email, users) => {
+const isEmailInDatabase = (email, users) => {
   for (const user in users) {
     if (email === users[user].email) {
-      return true;
+      return user;
     }
   }
   return false;
@@ -93,8 +93,12 @@ app.get("/login", (req, res) => {
 });
 app.post("/login", (req, res) => {
   const email = req.body.email;
-  console.log(users);
-  console.log(isEmailValid(email, users));
+  const validEmail = isEmailInDatabase(email, users);
+  console.log(validEmail);
+  if (!validEmail) {
+    res.sendStatus(403);
+    return;
+  };
   const password = req.body.password;
   console.log(email);
   console.log(password);
@@ -121,7 +125,7 @@ app.post("/register", (req, res) => {
     res.sendStatus(400);
     return;
   }
-  if (isEmailValid(email, users)) {
+  if (isEmailInDatabase(email, users)) {
     res.sendStatus(400);
     return;
   }
