@@ -110,7 +110,7 @@ app.post("/register", (req, res) => {
   if (!email || !password) {
     res.sendStatus(400);
     return;
-  };
+  }
   if (isEmailInUse(email, users)) {
     res.sendStatus(400);
     return;
@@ -124,4 +124,4 @@ app.post("/register", (req, res) => {
 app.get("/login", (req, res) => {
   const templateVars = { user: users[req.cookies.user_id] };
   res.render("user_login", templateVars);
-})
+});
