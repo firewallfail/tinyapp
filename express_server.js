@@ -15,7 +15,7 @@ const urlDatabase = {
   },
   i3BoGr: {
     longURL: "https://www.google.ca",
-    userID: "notadmin"
+    userID: "admin"
   }
 };
 
@@ -98,24 +98,41 @@ app.post("/urls", (req, res) => {
 
 //url deletion from /urls
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
+  const shortURL = req.params.shortURL;
+  const user = req.cookies.user_id;
+  const urls = urlsForUser(user);
+  if (!urls[shortURL]) {
+    return res.sendStatus(403);
+  };
+  delete urlDatabase[shortURL];
   return res.redirect("/urls");
 });
 
 //edit page for a single url
 app.get("/urls/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+  const user = req.cookies.user_id;
+  const urls = urlsForUser(user);
+  if (!urls[shortURL]) {
+    return res.sendStatus(403);
+  };
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.cookies.user_id] };
   return res.render("urls_show", templateVars);
 });
 //update link that the shortened url leads to
 app.post("/urls/:id", (req, res) => {
-  urlDatabase[req.params.id].longURL = req.body.longURL;
+  const id = req.params.id;
+  const user = req.cookies.user_id;
+  const urls = urlsForUser(user);
+  if (!urls[id]) {
+    return res.sendStatus(403);
+  };
+  urlDatabase[id].longURL = req.body.longURL;
   return res.redirect(`/urls/${req.params.id}`);
 });
 
 //redirect from the shortened url to the associated website
 app.get("/u/:shortURL", (req, res) => {
-  // console.log(urlDatabase[req.params.shortURL]);
   if (!urlDatabase[req.params.shortURL]) {
     return res.sendStatus(404);
   }
