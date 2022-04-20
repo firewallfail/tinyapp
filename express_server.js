@@ -90,22 +90,24 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-//logs user in and stores a cookie
+//brings user to login page
 app.get("/login", (req, res) => {
   const templateVars = { user: users[req.cookies.user_id] };
   res.render("user_login", templateVars);
 });
+//logs user in and stores a cookie
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const validEmail = isEmailInDatabase(email, users);
-  console.log(validEmail);
   if (!validEmail) {
     res.sendStatus(403);
     return;
   };
   const password = req.body.password;
-  console.log(email);
-  console.log(password);
+  if (users[validEmail].password !== password) {
+    res.sendStatus(403);
+    return;
+  }
   // res.cookie("username", req.body.username);
   res.redirect("/urls");
 });
