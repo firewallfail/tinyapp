@@ -108,7 +108,7 @@ app.post("/login", (req, res) => {
     res.sendStatus(403);
     return;
   }
-  // res.cookie("username", req.body.username);
+  res.cookie("user_id", validEmail);
   res.redirect("/urls");
 });
 //logs user out and removes the cookie
