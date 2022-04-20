@@ -35,15 +35,6 @@ const isEmailInDatabase = (email, users) => {
   }
   return false;
 };
-//check if a cookie was modified
-const isCookieValid = (cookie, users) => {
-  if (!users[cookie]) {
-    return true;
-  }
-  return false;
-};
-
-
 
 app.get("/", (req, res) => {
   return res.send("Hello!");
@@ -61,6 +52,9 @@ app.get("/urls.json", (req, res) => {
 
 //page to add new urls
 app.get("/urls/new", (req, res) => {
+  if (!req.cookies.user_id) {
+    return res.redirect("/login");
+  }
   const templateVars = { user: users[req.cookies.user_id] };
   return res.render("urls_new", templateVars);
 });
@@ -71,6 +65,9 @@ app.get("/urls", (req, res) => {
 });
 //response after adding a new page
 app.post("/urls", (req, res) => {
+  if (!req.cookies.user_id) {
+    return res.sendStatus(403);
+  }
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
   return res.redirect(`/urls/${shortURL}`);
@@ -101,11 +98,6 @@ app.get("/u/:shortURL", (req, res) => {
 
 //brings user to login page
 app.get("/login", (req, res) => {
-  // clearInvalidCookie(req.cookies.user_id, users);
-  if (isCookieValid(req.cookies.user_id, users)) {
-    console.log("running")
-    res.clearCookie('user_id');
-  }
   if (req.cookies.user_id) {
     return res.redirect("/urls");
   }
@@ -118,7 +110,6 @@ app.post("/login", (req, res) => {
   const validEmail = isEmailInDatabase(email, users);
   if (!validEmail) {
     return res.sendStatus(403);
-    return;
   };
   const password = req.body.password;
   if (users[validEmail].password !== password) {
