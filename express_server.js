@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const res = require("express/lib/response");
 app.use(cookieParser());
 app.set("view engine", "ejs");
+const bcrypt = require('bcryptjs');
 
 const urlDatabase = {
   b6UTxQ: {
@@ -21,7 +22,7 @@ const urlDatabase = {
 
 //remove dummy login
 const users = {
-  admin: {
+  '0asdf0': {
     id: "admin",
     email: "admin@admin.com",
     password: "admin"
@@ -155,8 +156,9 @@ app.post("/login", (req, res) => {
   if (!validEmail) {
     return res.sendStatus(403);
   };
+  const hashedPassword = users[validEmail].password;
   const password = req.body.password;
-  if (users[validEmail].password !== password) {
+  if (!bcrypt.compareSync(password, hashedPassword)) {
     return res.sendStatus(403);
   }
   res.cookie("user_id", validEmail);
@@ -180,6 +182,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(password, 10);
   //error handling for empty registration field
   if (!email || !password) {
     return res.sendStatus(400);
@@ -188,7 +191,7 @@ app.post("/register", (req, res) => {
     return res.sendStatus(400);
   }
   const id = generateRandomString();
-  users[id] = { id, email, password };
+  users[id] = { id, email, password: hashedPassword };
   res.cookie("user_id", id);
   return res.redirect("/urls");
 });
