@@ -93,6 +93,9 @@ app.get("/u/:shortURL", (req, res) => {
 
 //brings user to login page
 app.get("/login", (req, res) => {
+  if (req.cookies.user_id) {
+    return res.redirect("/urls");
+  }
   const templateVars = { user: users[req.cookies.user_id] };
   return res.render("user_login", templateVars);
 });
@@ -119,6 +122,9 @@ app.post("/logout", (req, res) => {
 
 //brings user to registration page
 app.get("/register", (req, res) => {
+  if (req.cookies.user_id) {
+    return res.redirect("/urls");
+  }
   const templateVars = { user: users[req.cookies.user_id] };
   return res.render("user_registration", templateVars);
 });
