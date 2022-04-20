@@ -17,12 +17,8 @@
         <button class="btn btn-primary" type="submit"><b>Logout</b></button>
         </h4>
         <% } else{ %>
-          <form class="form-inline" action="/login" method="GET">
-            <button class="btn btn-primary" type="submit"><b>Login</b></button>
-          </form>
-          <form class="form-inline" action="/register" method="GET">
-            <button class="btn btn-primary" type="submit"><b>Register</b></button>
-          </form>
+          <a class="btn btn-primary mr-1" href="/login"><b>Login</b></a>
+          <a class="btn btn-primary" href="/register"><b>Register</b></a>
           <% } %>
   </nav>
 </header>
