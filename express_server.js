@@ -12,6 +12,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+//remove dummy login
 const users = {
   admin: {
     id: "admin",
