@@ -91,6 +91,10 @@ app.post("/login", (req, res) => {
   res.cookie("username", req.body.username);
   res.redirect("/urls");
 });
+app.get("/login", (req, res) => {
+  const templateVars = { user: users[req.cookies.user_id] };
+  res.render("user_login", templateVars);
+});
 //logs user out and removes the cookie
 app.post("/logout", (req, res) => {
   res.clearCookie('username');
@@ -119,9 +123,4 @@ app.post("/register", (req, res) => {
   users[id] = { id, email, password };
   res.cookie("user_id", id);
   res.redirect("/urls");
-});
-
-app.get("/login", (req, res) => {
-  const templateVars = { user: users[req.cookies.user_id] };
-  res.render("user_login", templateVars);
 });
