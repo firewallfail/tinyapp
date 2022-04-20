@@ -22,7 +22,7 @@ const urlDatabase = {
 
 //remove dummy login
 const users = {
-  '0asdf0': {
+  admin: {
     id: "admin",
     email: "admin@admin.com",
     password: "admin"
