@@ -13,7 +13,11 @@ const urlDatabase = {
 };
 
 const users = {
-
+  admin: {
+    id: "admin",
+    email: "admin@admin.com",
+    password: "admin"
+  }
 };
 
 //convert a random number to hex and then take a 6 digit slice of it
