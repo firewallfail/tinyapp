@@ -87,13 +87,13 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 //logs user in and stores a cookie
-app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
-  res.redirect("/urls");
-});
 app.get("/login", (req, res) => {
   const templateVars = { user: users[req.cookies.user_id] };
   res.render("user_login", templateVars);
+});
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username);
+  res.redirect("/urls");
 });
 //logs user out and removes the cookie
 app.post("/logout", (req, res) => {
