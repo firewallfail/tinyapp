@@ -11,14 +11,13 @@ app.set("view engine", "ejs");
 const urlDatabase = {
   b6UTxQ: {
     longURL: "https://www.tsn.ca",
-    userID: "aJ48lW"
+    userID: "admin"
   },
   i3BoGr: {
     longURL: "https://www.google.ca",
-    userID: "aJ48lW"
+    userID: "notadmin"
   }
 };
-
 
 //remove dummy login
 const users = {
@@ -29,6 +28,7 @@ const users = {
   }
 };
 
+//Functions
 //convert a random number to hex and then take a 6 digit slice of it
 const generateRandomString = () => {
   return Math.random().toString(36).slice(2, 8);
@@ -42,6 +42,16 @@ const isEmailInDatabase = (email, users) => {
   }
   return false;
 };
+//return a new object for urls a user has access to
+const urlsForUser = (id) => {
+  const userUrls = {};
+  for (url in urlDatabase) {
+    if (urlDatabase[url].userID === id) {
+      userUrls[url] = urlDatabase[url];
+    }
+  }
+  return userUrls;
+}
 
 app.get("/", (req, res) => {
   return res.send("Hello!");
@@ -67,7 +77,12 @@ app.get("/urls/new", (req, res) => {
 });
 //page showing all current urls
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_id] };
+  const user = req.cookies.user_id;
+  if (!user) {
+    return res.sendStatus(403);
+  }
+  const urls = urlsForUser(user);
+  const templateVars = { urls: urls, user: users[user] };
   return res.render("urls_index", templateVars);
 });
 //response after adding a new page
