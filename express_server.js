@@ -9,9 +9,16 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW"
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW"
+  }
 };
+
 
 //remove dummy login
 const users = {
@@ -69,7 +76,8 @@ app.post("/urls", (req, res) => {
     return res.sendStatus(403);
   }
   let shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
+  urlDatabase[shortURL].longURL = req.body.longURL;
+  urlDatabase[shortURL].userID = req.cookies.user_id;
   return res.redirect(`/urls/${shortURL}`);
 });
 
@@ -81,18 +89,18 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 //edit page for a single url
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies.user_id] };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.cookies.user_id] };
   return res.render("urls_show", templateVars);
 });
 //update link that the shortened url leads to
 app.post("/urls/:id", (req, res) => {
-  urlDatabase[req.params.id] = req.body.longURL;
+  urlDatabase[req.params.id].longURL = req.body.longURL;
   return res.redirect(`/urls/${req.params.id}`);
 });
 
 //redirect from the shortened url to the associated website
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  const longURL = urlDatabase[req.params.shortURL].longURL;
   return res.redirect(longURL);
 });
 
