@@ -21,13 +21,13 @@ const generateRandomString = () => {
   return Math.random().toString(36).slice(2, 8);
 };
 //check if an email is already in the users object
-const isEmailInUse = (email, users) => {
+const isEmailValid = (email, users) => {
   for (const user in users) {
     if (email === users[user].email) {
       return true;
     }
-    return false;
   }
+  return false;
 };
 
 
@@ -92,7 +92,13 @@ app.get("/login", (req, res) => {
   res.render("user_login", templateVars);
 });
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
+  const email = req.body.email;
+  console.log(users);
+  console.log(isEmailValid(email, users));
+  const password = req.body.password;
+  console.log(email);
+  console.log(password);
+  // res.cookie("username", req.body.username);
   res.redirect("/urls");
 });
 //logs user out and removes the cookie
@@ -115,7 +121,7 @@ app.post("/register", (req, res) => {
     res.sendStatus(400);
     return;
   }
-  if (isEmailInUse(email, users)) {
+  if (isEmailValid(email, users)) {
     res.sendStatus(400);
     return;
   }
