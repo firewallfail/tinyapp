@@ -38,90 +38,89 @@ const isEmailInDatabase = (email, users) => {
 
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  return res.send("Hello!");
 });
 app.listen(PORT, () => {
   console.log(`TinyURL listening on port ${PORT}!`);
 });
 app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
+  return res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 //way to check all the values of the database as a json
 app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
+  return res.json(urlDatabase);
 });
 
 //page to add new urls
 app.get("/urls/new", (req, res) => {
   const templateVars = { user: users[req.cookies.user_id] };
-  res.render("urls_new", templateVars);
+  return res.render("urls_new", templateVars);
 });
 //response after adding a new page
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`);
+  return res.redirect(`/urls/${shortURL}`);
 });
 
 //page showing all current urls
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase, user: users[req.cookies.user_id] };
-  res.render("urls_index", templateVars);
+  return res.render("urls_index", templateVars);
 });
 //url deletion from /urls
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
+  return res.redirect("/urls");
 });
 
 //edit page for a single url
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies.user_id] };
-  res.render("urls_show", templateVars);
+  return res.render("urls_show", templateVars);
 });
 //update link that the shortened url leads to
 app.post("/urls/:id", (req, res) => {
   urlDatabase[req.params.id] = req.body.longURL;
-  res.redirect(`/urls/${req.params.id}`);
+  return res.redirect(`/urls/${req.params.id}`);
 });
 
 //redirect from the shortened url to the associated website
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
-  res.redirect(longURL);
+  return res.redirect(longURL);
 });
 
 //brings user to login page
 app.get("/login", (req, res) => {
   const templateVars = { user: users[req.cookies.user_id] };
-  res.render("user_login", templateVars);
+  return res.render("user_login", templateVars);
 });
 //logs user in and stores a cookie
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const validEmail = isEmailInDatabase(email, users);
   if (!validEmail) {
-    res.sendStatus(403);
+    return res.sendStatus(403);
     return;
   };
   const password = req.body.password;
   if (users[validEmail].password !== password) {
-    res.sendStatus(403);
-    return;
+    return res.sendStatus(403);
   }
   res.cookie("user_id", validEmail);
-  res.redirect("/urls");
+  return res.redirect("/urls");
 });
 //logs user out and removes the cookie
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id');
-  res.redirect("/urls");
+  return res.redirect("/urls");
 });
 
 //brings user to registration page
 app.get("/register", (req, res) => {
   const templateVars = { user: users[req.cookies.user_id] };
-  res.render("user_registration", templateVars);
+  return res.render("user_registration", templateVars);
 });
 //creates a new user when someone registers
 app.post("/register", (req, res) => {
@@ -129,15 +128,13 @@ app.post("/register", (req, res) => {
   const password = req.body.password;
   //error handling for empty registration field
   if (!email || !password) {
-    res.sendStatus(400);
-    return;
+    return res.sendStatus(400);
   }
   if (isEmailInDatabase(email, users)) {
-    res.sendStatus(400);
-    return;
+    return res.sendStatus(400);
   }
   const id = generateRandomString();
   users[id] = { id, email, password };
   res.cookie("user_id", id);
-  res.redirect("/urls");
+  return res.redirect("/urls");
 });
