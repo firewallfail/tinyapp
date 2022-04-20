@@ -100,6 +100,10 @@ app.post("/urls/:id", (req, res) => {
 
 //redirect from the shortened url to the associated website
 app.get("/u/:shortURL", (req, res) => {
+  // console.log(urlDatabase[req.params.shortURL]);
+  if (!urlDatabase[req.params.shortURL]) {
+    return res.sendStatus(404);
+  }
   const longURL = urlDatabase[req.params.shortURL].longURL;
   return res.redirect(longURL);
 });
