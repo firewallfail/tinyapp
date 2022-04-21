@@ -1,4 +1,3 @@
-//requires at top
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
@@ -6,13 +5,10 @@ const res = require("express/lib/response");
 const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
 const bcrypt = require('bcryptjs');
 
-//const app = express();
 const app = express();
 
-//view engine setup
 app.set("view engine", "ejs");
 
-//app.use
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({
   name: 'user_id',
@@ -25,7 +21,7 @@ const salt = bcrypt.genSaltSync(10);
 // next();
 // });
 
-const PORT = 8080; // default port 8080
+const PORT = 8080;
 const urlDatabase = {
 };
 const users = {
