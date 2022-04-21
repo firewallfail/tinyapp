@@ -1,23 +1,37 @@
+//requires at top
 const express = require("express");
-const app = express();
-const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: true }));
 const cookieSession = require('cookie-session');
 const res = require("express/lib/response");
+const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
+const bcrypt = require('bcryptjs');
+
+//const app = express();
+const app = express();
+
+//view engine setup
+app.set("view engine", "ejs");
+
+//app.use
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({
   name: 'user_id',
   secret: 'longstringtomakesurecookiesessionworks1234'
 }));
-app.set("view engine", "ejs");
-const bcrypt = require('bcryptjs');
-const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
+//add salt
 
+//put all error handling in here
+// app.use((req, res, next) => {
+// next();
+// });
+
+
+const PORT = 8080; // default port 8080
 const urlDatabase = {
 };
-
 const users = {
 };
+
 
 app.get("/", (req, res) => {
   return res.send("Hello!");
@@ -144,6 +158,7 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const hashedPassword = bcrypt.hashSync(password, 10);
+  console.log(hashedPassword);
   //error handling for empty registration field
   if (!email || !password) {
     return res.sendStatus(400);
