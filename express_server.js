@@ -53,7 +53,7 @@ app.get("/urls", (req, res) => {
   const urls = urlsForUser(user, urlDatabase);
   const templateVars = { urls: urls, user: users[user] };
   if (!user) {
-    templateVars.status = 403;
+    templateVars.status = "You must be logged in to view this page.";
     return res.status(403).render("error", templateVars);
   }
   return res.render("urls_index", templateVars);
@@ -62,7 +62,7 @@ app.get("/urls", (req, res) => {
 app.post("/urls", (req, res) => {
   if (!req.session.user_id) {
     templateVars.user = users[req.session.user_id];
-    templateVars.status = 403;
+    templateVars.status = "You do not have access to this page";
     return res.status(403).render("error", templateVars);
   }
   let shortURL = generateRandomString();
@@ -80,7 +80,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[shortURL]) {
     templateVars.user = users[req.session.user_id];
-    templateVars.status = 403;
+    templateVars.status = "You do not have access to this page";
     return res.status(403).render("error", templateVars);
   }
   delete urlDatabase[shortURL];
@@ -94,7 +94,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[shortURL]) {
     const templateVars = { user: users[req.session.user_id] };
-    templateVars.status = 403;
+    templateVars.status = "You do not have access to this page";
     return res.status(403).render("error", templateVars);
   }
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.session.user_id] };
@@ -108,7 +108,7 @@ app.post("/urls/:id", (req, res) => {
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[id]) {
     templateVars.user = users[req.session.user_id];
-    templateVars.status = 403;
+    templateVars.status = "You do not have access to this page";
     return res.status(403).render("error", templateVars);
   }
   urlDatabase[id].longURL = req.body.longURL;
@@ -120,7 +120,7 @@ app.get("/u/:shortURL", (req, res) => {
   const templateVars = {}
   if (!urlDatabase[req.params.shortURL]) {
     templateVars.user = users[req.session.user_id];
-    templateVars.status = 404;
+    templateVars.status = "This url does not exist";
     return res.status(404).render("error", templateVars);
   }
   const longURL = urlDatabase[req.params.shortURL].longURL;
@@ -142,14 +142,14 @@ app.post("/login", (req, res) => {
   const validEmail = getUserByEmail(email, users);
   if (!validEmail) {
     templateVars.user = users[req.session.user_id];
-    templateVars.status = 403;
+    templateVars.status = "Your email is incorrect";
     return res.status(403).render("error", templateVars);
   }
   const hashedPassword = users[validEmail].password;
   const password = req.body.password;
   if (!bcrypt.compareSync(password, hashedPassword)) {
     templateVars.user = users[req.session.user_id];
-    templateVars.status = 403;
+    templateVars.status = "Your password is incorrect";
     return res.status(403).render("error", templateVars);
   }
   req.session.user_id = validEmail;
@@ -179,12 +179,12 @@ app.post("/register", (req, res) => {
   //error handling for empty registration field
   if (!email || !password) {
     templateVars.user = users[req.session.user_id];
-    templateVars.status = 400;
+    templateVars.status = "The email or password is invalid";
     return res.status(400).render("error", templateVars);
   }
   if (getUserByEmail(email, users)) {
     templateVars.user = users[req.session.user_id];
-    templateVars.status = 400;
+    templateVars.status = "There is already an account registered to this email";
     return res.status(400).render("error", templateVars);
   }
   const id = generateRandomString();
