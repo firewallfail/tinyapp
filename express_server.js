@@ -11,6 +11,7 @@ app.use(cookieSession({
 }));
 app.set("view engine", "ejs");
 const bcrypt = require('bcryptjs');
+const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
 
 const urlDatabase = {
   b6UTxQ: {
@@ -32,39 +33,8 @@ const users = {
   }
 };
 
-//Functions
-//convert a random number to hex and then take a 6 digit slice of it
-const generateRandomString = () => {
-  return Math.random().toString(36).slice(2, 8);
-};
-//check if an email is already in the users object
-const getUserByEmail = (email, users) => {
-  for (const user in users) {
-    if (email === users[user].email) {
-      return user;
-    }
-  }
-  return false;
-};
-//return a new object for urls a user has access to
-const urlsForUser = (id) => {
-  const userUrls = {};
-  for (url in urlDatabase) {
-    if (urlDatabase[url].userID === id) {
-      userUrls[url] = urlDatabase[url];
-    }
-  }
-  return userUrls;
-}
-
 app.get("/", (req, res) => {
   return res.send("Hello!");
-});
-app.listen(PORT, () => {
-  console.log(`TinyURL listening on port ${PORT}!`);
-});
-app.get("/hello", (req, res) => {
-  return res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 //way to check all the values of the database as a json
 app.get("/urls.json", (req, res) => {
@@ -85,7 +55,7 @@ app.get("/urls", (req, res) => {
   if (!user) {
     return res.sendStatus(403);
   }
-  const urls = urlsForUser(user);
+  const urls = urlsForUser(user, urlDatabase);
   const templateVars = { urls: urls, user: users[user] };
   return res.render("urls_index", templateVars);
 });
@@ -105,7 +75,7 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
   const user = req.session.user_id;
-  const urls = urlsForUser(user);
+  const urls = urlsForUser(user, urlDatabase);
   if (!urls[shortURL]) {
     return res.sendStatus(403);
   };
@@ -117,7 +87,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const user = req.session.user_id;
-  const urls = urlsForUser(user);
+  const urls = urlsForUser(user, urlDatabase);
   if (!urls[shortURL]) {
     return res.sendStatus(403);
   };
@@ -128,7 +98,7 @@ app.get("/urls/:shortURL", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   const id = req.params.id;
   const user = req.session.user_id;
-  const urls = urlsForUser(user);
+  const urls = urlsForUser(user, urlDatabase);
   if (!urls[id]) {
     return res.sendStatus(403);
   };
@@ -199,4 +169,8 @@ app.post("/register", (req, res) => {
   users[id] = { id, email, password: hashedPassword };
   req.session.user_id = id;
   return res.redirect("/urls");
+});
+
+app.listen(PORT, () => {
+  console.log(`TinyURL listening on port ${PORT}!`);
 });
