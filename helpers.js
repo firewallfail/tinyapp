@@ -15,7 +15,7 @@ const getUserByEmail = (email, users) => {
 //return a new object for urls a user has access to
 const urlsForUser = (id, urlDatabase) => {
   const userUrls = {};
-  for (url in urlDatabase) {
+  for (const url in urlDatabase) {
     if (urlDatabase[url].userID === id) {
       userUrls[url] = urlDatabase[url];
     }

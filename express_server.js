@@ -78,7 +78,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[shortURL]) {
     return res.sendStatus(403);
-  };
+  }
   delete urlDatabase[shortURL];
   return res.redirect("/urls");
 });
@@ -90,7 +90,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[shortURL]) {
     return res.sendStatus(403);
-  };
+  }
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.session.user_id] };
   return res.render("urls_show", templateVars);
 });
@@ -101,7 +101,7 @@ app.post("/urls/:id", (req, res) => {
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[id]) {
     return res.sendStatus(403);
-  };
+  }
   urlDatabase[id].longURL = req.body.longURL;
   return res.redirect(`/urls/${req.params.id}`);
 });
@@ -129,7 +129,7 @@ app.post("/login", (req, res) => {
   const validEmail = getUserByEmail(email, users);
   if (!validEmail) {
     return res.sendStatus(403);
-  };
+  }
   const hashedPassword = users[validEmail].password;
   const password = req.body.password;
   if (!bcrypt.compareSync(password, hashedPassword)) {
