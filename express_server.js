@@ -38,7 +38,7 @@ const generateRandomString = () => {
   return Math.random().toString(36).slice(2, 8);
 };
 //check if an email is already in the users object
-const isEmailInDatabase = (email, users) => {
+const getUserByEmail = (email, users) => {
   for (const user in users) {
     if (email === users[user].email) {
       return user;
@@ -156,7 +156,7 @@ app.get("/login", (req, res) => {
 //logs user in and stores a cookie
 app.post("/login", (req, res) => {
   const email = req.body.email;
-  const validEmail = isEmailInDatabase(email, users);
+  const validEmail = getUserByEmail(email, users);
   if (!validEmail) {
     return res.sendStatus(403);
   };
@@ -192,7 +192,7 @@ app.post("/register", (req, res) => {
   if (!email || !password) {
     return res.sendStatus(400);
   }
-  if (isEmailInDatabase(email, users)) {
+  if (getUserByEmail(email, users)) {
     return res.sendStatus(400);
   }
   const id = generateRandomString();
