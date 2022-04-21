@@ -27,9 +27,12 @@ const urlDatabase = {
 const users = {
 };
 
-
+//Root domain sends users to login if not logged in or their personal page if they are
 app.get("/", (req, res) => {
-  return res.send("Hello!");
+  if (!req.session.user_id) {
+    return res.redirect("/login")
+  }
+  return res.redirect("/urls");
 });
 //way to check all the values of the database as a json
 app.get("/urls.json", (req, res) => {
@@ -47,17 +50,19 @@ app.get("/urls/new", (req, res) => {
 //page showing all current urls
 app.get("/urls", (req, res) => {
   const user = req.session.user_id;
-  if (!user) {
-    return res.sendStatus(403);
-  }
   const urls = urlsForUser(user, urlDatabase);
   const templateVars = { urls: urls, user: users[user] };
+  if (!user) {
+    templateVars.status = 403;
+    return res.status(403).render("error", templateVars);
+  }
   return res.render("urls_index", templateVars);
 });
 //response after adding a new page
 app.post("/urls", (req, res) => {
   if (!req.session.user_id) {
-    return res.sendStatus(403);
+    templateVars.status = 403;
+    return res.status(403).render("error", templateVars);
   }
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = { shortURL };
@@ -68,11 +73,13 @@ app.post("/urls", (req, res) => {
 
 //url deletion from /urls
 app.post("/urls/:shortURL/delete", (req, res) => {
+  const templateVars = {}
   const shortURL = req.params.shortURL;
   const user = req.session.user_id;
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[shortURL]) {
-    return res.sendStatus(403);
+    templateVars.status = 403;
+    return res.status(403).render("error", templateVars);
   }
   delete urlDatabase[shortURL];
   return res.redirect("/urls");
@@ -84,18 +91,22 @@ app.get("/urls/:shortURL", (req, res) => {
   const user = req.session.user_id;
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[shortURL]) {
-    return res.sendStatus(403);
+    const templateVars = {};
+    templateVars.status = 403;
+    return res.status(403).render("error", templateVars);
   }
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.session.user_id] };
   return res.render("urls_show", templateVars);
 });
 //update link that the shortened url leads to
 app.post("/urls/:id", (req, res) => {
+  const templateVars = {};
   const id = req.params.id;
   const user = req.session.user_id;
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[id]) {
-    return res.sendStatus(403);
+    templateVars.status = 403;
+    return res.status(403).render("error", templateVars);
   }
   urlDatabase[id].longURL = req.body.longURL;
   return res.redirect(`/urls/${req.params.id}`);
@@ -103,8 +114,10 @@ app.post("/urls/:id", (req, res) => {
 
 //redirect from the shortened url to the associated website
 app.get("/u/:shortURL", (req, res) => {
+  const templateVars = {}
   if (!urlDatabase[req.params.shortURL]) {
-    return res.sendStatus(404);
+    templateVars.status = 404;
+    return res.status(404).render("error", templateVars);
   }
   const longURL = urlDatabase[req.params.shortURL].longURL;
   return res.redirect(longURL);
@@ -120,15 +133,18 @@ app.get("/login", (req, res) => {
 });
 //logs user in and stores a cookie
 app.post("/login", (req, res) => {
+  const templateVars = {};
   const email = req.body.email;
   const validEmail = getUserByEmail(email, users);
   if (!validEmail) {
-    return res.sendStatus(403);
+    templateVars.status = 403;
+    return res.status(403).render("error", templateVars);
   }
   const hashedPassword = users[validEmail].password;
   const password = req.body.password;
   if (!bcrypt.compareSync(password, hashedPassword)) {
-    return res.sendStatus(403);
+    templateVars.status = 403;
+    return res.status(403).render("error", templateVars);
   }
   req.session.user_id = validEmail;
   return res.redirect("/urls");
@@ -150,16 +166,19 @@ app.get("/register", (req, res) => {
 });
 //creates a new user when someone registers
 app.post("/register", (req, res) => {
+  const templateVars = {};
   const email = req.body.email;
   const password = req.body.password;
   const hashedPassword = bcrypt.hashSync(password, salt);
   console.log(hashedPassword);
   //error handling for empty registration field
   if (!email || !password) {
-    return res.sendStatus(400);
+    templateVars.status = 400;
+    return res.status(400).render("error", templateVars);
   }
   if (getUserByEmail(email, users)) {
-    return res.sendStatus(400);
+    templateVars.status = 400;
+    return res.status(400).render("error", templateVars);
   }
   const id = generateRandomString();
   users[id] = { id, email, password: hashedPassword };
