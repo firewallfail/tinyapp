@@ -10,7 +10,7 @@ const getUserByEmail = (email, users) => {
       return user;
     }
   }
-  return false;
+  return undefined;
 };
 //return a new object for urls a user has access to
 const urlsForUser = (id, urlDatabase) => {
