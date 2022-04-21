@@ -4,12 +4,12 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/full_urls.PNG)
-!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/full_edit.PNG)
-!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/full_login.PNG)
-!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/small_urls.PNG)
-!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/small_edit.PNG)
-!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/small_login.PNG)
+!["Full size view of URLS page"](https://github.com/firewallfail/tinyapp/blob/master/docs/full_urls.PNG)
+!["Full size view of edit page"](https://github.com/firewallfail/tinyapp/blob/master/docs/full_edit.PNG)
+!["Full size view of login page"](https://github.com/firewallfail/tinyapp/blob/master/docs/full_login.PNG)
+!["Scaled view of URLS page"](https://github.com/firewallfail/tinyapp/blob/master/docs/small_urls.PNG)
+!["Scaled view of edit page"](https://github.com/firewallfail/tinyapp/blob/master/docs/small_edit.PNG)
+!["Scaled view of login page"](https://github.com/firewallfail/tinyapp/blob/master/docs/small_login.PNG)
 
 ## Dependencies
 
