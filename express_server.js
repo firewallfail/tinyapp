@@ -95,6 +95,7 @@ app.post("/urls", (req, res) => {
     return res.sendStatus(403);
   }
   let shortURL = generateRandomString();
+  urlDatabase[shortURL] = { shortURL };
   urlDatabase[shortURL].longURL = req.body.longURL;
   urlDatabase[shortURL].userID = req.session.user_id;
   return res.redirect(`/urls/${shortURL}`);
