@@ -61,6 +61,7 @@ app.get("/urls", (req, res) => {
 //response after adding a new page
 app.post("/urls", (req, res) => {
   if (!req.session.user_id) {
+    templateVars.user = users[req.session.user_id];
     templateVars.status = 403;
     return res.status(403).render("error", templateVars);
   }
@@ -78,6 +79,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const user = req.session.user_id;
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[shortURL]) {
+    templateVars.user = users[req.session.user_id];
     templateVars.status = 403;
     return res.status(403).render("error", templateVars);
   }
@@ -91,7 +93,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const user = req.session.user_id;
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[shortURL]) {
-    const templateVars = {};
+    const templateVars = { user: users[req.session.user_id] };
     templateVars.status = 403;
     return res.status(403).render("error", templateVars);
   }
@@ -105,6 +107,7 @@ app.post("/urls/:id", (req, res) => {
   const user = req.session.user_id;
   const urls = urlsForUser(user, urlDatabase);
   if (!urls[id]) {
+    templateVars.user = users[req.session.user_id];
     templateVars.status = 403;
     return res.status(403).render("error", templateVars);
   }
@@ -116,6 +119,7 @@ app.post("/urls/:id", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   const templateVars = {}
   if (!urlDatabase[req.params.shortURL]) {
+    templateVars.user = users[req.session.user_id];
     templateVars.status = 404;
     return res.status(404).render("error", templateVars);
   }
@@ -137,12 +141,14 @@ app.post("/login", (req, res) => {
   const email = req.body.email;
   const validEmail = getUserByEmail(email, users);
   if (!validEmail) {
+    templateVars.user = users[req.session.user_id];
     templateVars.status = 403;
     return res.status(403).render("error", templateVars);
   }
   const hashedPassword = users[validEmail].password;
   const password = req.body.password;
   if (!bcrypt.compareSync(password, hashedPassword)) {
+    templateVars.user = users[req.session.user_id];
     templateVars.status = 403;
     return res.status(403).render("error", templateVars);
   }
@@ -170,13 +176,14 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const hashedPassword = bcrypt.hashSync(password, salt);
-  console.log(hashedPassword);
   //error handling for empty registration field
   if (!email || !password) {
+    templateVars.user = users[req.session.user_id];
     templateVars.status = 400;
     return res.status(400).render("error", templateVars);
   }
   if (getUserByEmail(email, users)) {
+    templateVars.user = users[req.session.user_id];
     templateVars.status = 400;
     return res.status(400).render("error", templateVars);
   }
