@@ -14,23 +14,9 @@ const bcrypt = require('bcryptjs');
 const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
 
 const urlDatabase = {
-  b6UTxQ: {
-    longURL: "https://www.tsn.ca",
-    userID: "admin"
-  },
-  i3BoGr: {
-    longURL: "https://www.google.ca",
-    userID: "admin"
-  }
 };
 
-//remove dummy login
 const users = {
-  admin: {
-    id: "admin",
-    email: "admin@admin.com",
-    password: "admin"
-  }
 };
 
 app.get("/", (req, res) => {
