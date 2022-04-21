@@ -19,7 +19,6 @@ app.use(cookieSession({
   secret: 'longstringtomakesurecookiesessionworks1234'
 }));
 const salt = bcrypt.genSaltSync(10);
-//add salt
 
 //put all error handling in here
 // app.use((req, res, next) => {
