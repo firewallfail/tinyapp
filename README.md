@@ -4,8 +4,12 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["screenshot description"](#)
-!["screenshot description"](#)
+!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/full_urls.PNG)
+!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/full_edit.PNG)
+!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/full_login.PNG)
+!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/small_urls.PNG)
+!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/small_edit.PNG)
+!["screenshot description"](https://github.com/firewallfail/tinyapp/blob/master/docs/small_login.PNG)
 
 ## Dependencies
 
