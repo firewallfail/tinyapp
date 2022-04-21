@@ -16,11 +16,6 @@ app.use(cookieSession({
 }));
 const salt = bcrypt.genSaltSync(10);
 
-//put all error handling in here
-// app.use((req, res, next) => {
-// next();
-// });
-
 const PORT = 8080;
 const urlDatabase = {
 };
@@ -34,6 +29,7 @@ app.get("/", (req, res) => {
   }
   return res.redirect("/urls");
 });
+
 //way to check all the values of the database as a json
 app.get("/urls.json", (req, res) => {
   return res.json(urlDatabase);
@@ -47,6 +43,7 @@ app.get("/urls/new", (req, res) => {
   const templateVars = { user: users[req.session.user_id] };
   return res.render("urls_new", templateVars);
 });
+
 //page showing all current urls
 app.get("/urls", (req, res) => {
   const user = req.session.user_id;
@@ -58,6 +55,7 @@ app.get("/urls", (req, res) => {
   }
   return res.render("urls_index", templateVars);
 });
+
 //response after adding a new page
 app.post("/urls", (req, res) => {
   if (!req.session.user_id) {
@@ -100,6 +98,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.session.user_id] };
   return res.render("urls_show", templateVars);
 });
+
 //update link that the shortened url leads to
 app.post("/urls/:id", (req, res) => {
   const templateVars = {};
@@ -135,6 +134,7 @@ app.get("/login", (req, res) => {
   const templateVars = { user: users[req.session.user_id] };
   return res.render("user_login", templateVars);
 });
+
 //logs user in and stores a cookie
 app.post("/login", (req, res) => {
   const templateVars = {};
@@ -155,6 +155,7 @@ app.post("/login", (req, res) => {
   req.session.user_id = validEmail;
   return res.redirect("/urls");
 });
+
 //logs user out and removes the cookie
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id');
@@ -170,6 +171,7 @@ app.get("/register", (req, res) => {
   const templateVars = { user: users[req.session.user_id] };
   return res.render("user_registration", templateVars);
 });
+
 //creates a new user when someone registers
 app.post("/register", (req, res) => {
   const templateVars = {};
