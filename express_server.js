@@ -18,13 +18,13 @@ app.use(cookieSession({
   name: 'user_id',
   secret: 'longstringtomakesurecookiesessionworks1234'
 }));
+const salt = bcrypt.genSaltSync(10);
 //add salt
 
 //put all error handling in here
 // app.use((req, res, next) => {
 // next();
 // });
-
 
 const PORT = 8080; // default port 8080
 const urlDatabase = {
@@ -157,7 +157,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  const hashedPassword = bcrypt.hashSync(password, 10);
+  const hashedPassword = bcrypt.hashSync(password, salt);
   console.log(hashedPassword);
   //error handling for empty registration field
   if (!email || !password) {
